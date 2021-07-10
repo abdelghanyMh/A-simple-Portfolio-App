@@ -15,22 +15,30 @@ app.use(cors({ optionsSuccessStatus: 200 }));  // some legacy browsers choke on 
 app.use(express.static('public'));
 
 // http://expressjs.com/en/starter/basic-routing.html
-app.get("/", function(req, res) {
+app.get("/", function (req, res) {
   res.sendFile(__dirname + '/views/index.html');
 });
 
+
 // rout to Timestamp Microservice
-app.get("/Timestamp", function(req, res) {
+app.get("/Timestamp", function (req, res) {
   res.sendFile(__dirname + '/views/Timestamp.html');
 });
 
+// rout to  Request Header Parser Microservice 
+app.get("/whoami", function (req, res) {
+  res.sendFile(__dirname + '/views/request_header_Parser.html');
+});
+
+
 
 // your first API endpoint... 
-app.get("/api/hello", function(req, res) {
+app.get("/api/hello", function (req, res) {
   res.json({ greeting: 'hello API' });
 });
 
 
+/* begin of timestamp Api**/
 /*
  * handel /api/timestamp/
  * @param  string date empty String
@@ -81,10 +89,35 @@ app.get('/api/timestamp/:date?', (req, res) => {
 
 });
 
+/** end of timestamp Api**/
+
+
+/* begin of Request Header Parser Microservice  Api**/
+/*
+ * handel /api/whoami/
+ * @return  json
+ * @example        /api/whoami/ return  JSON object with user's IP address in the ipaddress key ,user's preferred language in the language key and user's software in the software key
+ */
+app.get("/api/whoami", (req, res) => {
+  res.json({
+    ipaddress: req.headers["x-forwarded-for"],
+    language: req.headers["accept-language"],
+    software: req.headers["user-agent"]
+  });
+  // console.log(req.headers);
+
+});
+
+/** end  of Request Header Parser Microservice **/
+
+
+
+
+
 
 
 
 // listen for requests :)
-var listener = app.listen(process.env.PORT, function() {
+var listener = app.listen(process.env.PORT, function () {
   console.log('Your app is listening on port ' + listener.address().port);
 });
