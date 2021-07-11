@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+	<title>URL Shortener Microservice | freeCodeCamp.org</title>
+	<link rel="icon" type="image/png" href="https://cdn.freecodecamp.org/universal/favicons/favicon-16x16.png" />
+	<link href="urlshortener.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+	<h1>URL Shortener Microservice</h1>
+	<main>
+		<section>
+			<form action="api/shorturl" method="POST">
+				<fieldset>
+					<legend>URL Shortener</legend>
+					<label for="url_input">URL:</label>
+            <input id="url_input" type="text" name="url" value="https://www.freecodecamp.org/" />
+            <input type="submit" value="POST URL" />
+          </fieldset>
+        </form>
+      </section>
+      <section>
+        <h3>Example Usage:</h3>
+        <a href="https://boilerplate-project-urlshortener-1.abdelghanymh.repl.co/api/shorturl/3">
+          [this_project_url]/api/shorturl/3
+        </a>
+
+        <h3>Will Redirect to:</h3>
+        <p>https://abdelghanymh.github.io/random-quote-generator/</p>
+
+        <h3><a href="api/shorturl/full">full list </a></h3>
+      
+
+      </section>
+
+    </main>
+    <footer>
+      <p>By <a href="https://twitter.com/mahammedi_dz">Mahammedi ABdelghani</a></p>
+    </footer>
+  </body>
+</html>

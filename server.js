@@ -1,13 +1,13 @@
 // server.js
 // where your node app starts
 
-
 // init project
 var express = require('express');
 var app = express();
+require('dotenv').config();
 
 // enable CORS (https://en.wikipedia.org/wiki/Cross-origin_resource_sharing)
-// so that your API is remotely testable by FCC 
+// so that your API is remotely testable by FCC
 var cors = require('cors');
 app.use(cors({ optionsSuccessStatus: 200 }));  // some legacy browsers choke on 204
 
@@ -25,14 +25,19 @@ app.get("/Timestamp", function (req, res) {
   res.sendFile(__dirname + '/views/Timestamp.html');
 });
 
-// rout to  Request Header Parser Microservice 
+// rout to  Request Header Parser Microservice
 app.get("/whoami", function (req, res) {
   res.sendFile(__dirname + '/views/request_header_Parser.html');
 });
 
+// rout to URL Shortener   Api
+app.get("/urlshortener", function (req, res) {
+  res.sendFile(__dirname + '/views/urlshortener.html');
+});
 
 
-// your first API endpoint... 
+
+// your first API endpoint...
 app.get("/api/hello", function (req, res) {
   res.json({ greeting: 'hello API' });
 });
@@ -112,6 +117,114 @@ app.get("/api/whoami", (req, res) => {
 
 
 
+/* begin of URL Shortener   Api**/
+/*
+ * handel /api/shorturl/full, /api/shorturl, /api/shorturl/:shortUrl?
+ * @return  json
+ * @example        you can POST a URL to /api/shorturl and get a JSON response  { original_url : 'https://freeCodeCamp.org', short_url : 1}
+ */
+const mongoose = require('mongoose');
+const { Schema } = mongoose;
+
+// console.log(process.env.DB_URI);
+// this user has limited privilege to the mongodb database so ...
+
+mongoose.connect(process.env.DB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+
+const bodyParser = require("body-parser");
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }));
+
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.json());
+
+// Create a URL schema
+// https://mongoosejs.com/docs/guide.html#definition
+let urlSchema = new Schema({
+  original_url: { type: String, required: true },//preferred
+  short_url: Number
+});
+
+// Create URL model from the schema.
+let Url = mongoose.model('Url', urlSchema);
+
+// get the full list of urls
+app.get('/api/shorturl/full', (req, res) => {
+  Url.find({})
+    .sort({ "short_url": 1 })
+    .select({ __v: 0, _id: 0 })
+    .exec((err, list) => {
+      if (err) return console.error(err);
+      res.json(list);
+      // console.log(list);
+    });
+
+
+});
+
+// handel  POST: /api/shorturl
+app.post("/api/shorturl", (req, res) => {
+
+  //  verify a submitted URL.
+  let receivedUrl = req.body.url;
+  var urlExists = require('url-exists');
+
+
+  urlExists(receivedUrl, function (err, exists) {
+    console.log(exists); // true
+    // If you pass an invalid URL
+    if (!exists) {
+      res.json({ error: 'invalid url' });
+    }
+  });
+
+  // will use auto increment approach to set the short url  for the original_url
+
+  // get the latest short_url number used
+  Url.find({})
+    .sort({ "short_url": -1 })
+    .limit(1)
+    .exec(
+      (err, docs) => {
+
+        let nextShortUrl = docs[0].short_url + 1;
+
+        // create Url
+        let newUrl = {
+          original_url: req.body.url,
+          short_url: nextShortUrl
+        };
+
+        // save url in mongoDB
+        const url = new Url(newUrl);
+
+        url.save((err, doc) => {
+          if (err) return console.error(err);
+          console.log("Document inserted succussfully!");
+          res.json(newUrl);
+        });
+      });
+});
+
+// handel GET: /api/shorturl/number
+app.get('/api/shorturl/:shortUrl?', (req, res) => {
+  //console.log(typeof req.params.shortUrl);
+  let shortUrl = parseInt(req.params.shortUrl);
+
+  Url.find({ "short_url": shortUrl }, (err, docs) => {
+    if (err) return console.log(err);
+    else if (typeof docs !== 'undefined' && docs.length === 0) //short url does not exist in the database
+      res.json({ error: 'invalid short_url' });
+    else {//redirect to the original_url;
+      // console.log(docs[0].original_url);
+      res.redirect(docs[0].original_url);
+    }
+  });
+
+
+});
+
+/** end  of URL Shortener   Api **/
 
 
 
