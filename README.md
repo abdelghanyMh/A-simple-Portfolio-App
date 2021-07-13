@@ -11,5 +11,8 @@
 4. [Exercise Tracker](https://www.freecodecamp.org/learn/apis-and-microservices/apis-and-microservices-projects/exercise-tracker)
 	-   [Live Demo](https://exercisetracker.abdelghanymh.repl.co)
 
+5. [File Metadata Microservice](https://www.freecodecamp.org/learn/apis-and-microservices/apis-and-microservices-projects/file-metadata-microservice)
+	-   [Live Demo](https://file-metadata-microservice.abdelghanymh.repl.co/)
+
 
 
