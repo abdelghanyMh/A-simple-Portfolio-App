@@ -36,9 +36,13 @@ app.get("/urlshortener", (req, res) => {
 });
 
 // rout to Exercise tracker  Api
-
 app.get("/exercisetracker", (req, res) => {
   res.sendFile(__dirname + '/views/exercisetracker.html');
+});
+
+// rout to File Metadata Microservice
+app.get("/filemetadata", (req, res) => {
+  res.sendFile(__dirname + '/views/filemetadata.html');
 });
 
 // your first API endpoint...
@@ -453,11 +457,35 @@ app.post('/api/users/:_id/exercises', (req, res) => {
       }
     });
 });
-
-
 /** end  of URL Shortener   Api **/
 
 
+/* begin of File Metadata Microservice **/
+
+var multer = require('multer')
+var upload = multer({ dest: 'uploads/' })
+
+/**
+ * handel POST /api/fileanalyse -  Upload file and extract metadata of that file
+ * @param  form data
+ * @return  Sting JSON
+ * @example POST /api/fileanalyse {"name": "test_file.txt","type": "text/plain","size": 2}
+ */
+
+
+app.post('/api/fileanalyse', upload.single('upfile'), (req, res) => {
+  // console.log(req.file);
+  // req.file is the `upfile` file https://www.npmjs.com/package/multer
+  const metaData = {
+    name: req.file.originalname,
+    type: req.file.mimetype,
+    size: req.file.size
+  }
+  res.json(metaData);
+
+});
+
+/** end of File Metadata Microservice**/
 
 
 // listen for requests :)
