@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Exercise Tracker | freeCodeCamp</title>
+  <link rel="shortcut icon" href="https://cdn.freecodecamp.org/universal/favicons/favicon-32x32.png"
+    type="image/x-icon" />
+  <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css">
+  <link href="exercisetracker.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+  <div class="container">
+    <h1>Exercise tracker</h1>
+
+
+    <form action="/api/users" method="post">
+      <h3>Create a New User</h3>
+      <p><code>POST /api/users</code></p>
+
+      <section>
+
+        <label for="uname">username</label>
+        <input id="uname" type="text" name="username" autocomplete="username" required autofocus>
+      </section>
+
+      <input type="submit" value="sign-up">
+    </form>
+
+    <form id="exercise-form" method="post">
+      <h3>Add exercises</h3>
+      <p><code>POST /api/users/:_id/exercises</code></p>
+      <section>
+        <label for="uid">_id</label>
+        <input id="uid" type="text" name=":_id" value='60ec69139b16631668556442' required>
+      </section>
+      <section>
+        <label for="description">Description</label>
+        <input id="description" type="text" name="description">
+      </section>
+      <section>
+        <label for="duration">Duration (mins.)</label>
+        <input id="duration" type="number" name="duration" value="5">
+      </section>
+      <section>
+        <label for="date">Date (yyyy-mm-dd)</label>
+        <input id="date" type="date" name="date" value="2020-04-04">
+      </section>
+      <input type="submit" value="Add">
+    </form>
+
+
+    <section id='extra-features'>
+      <h1>API Extra Features</h1>
+      <ol>
+        <li>
+          <h3><a href="/api/users">List All User Accounts</a></h3>
+        </li>
+        <li>
+          <h3><a href="/api/users/60ec69139b16631668556442/logs">Retrieve a <code>full</code> exercise log of a user</a>
+          </h3>
+        </li>
+        <li>
+          <h3><a href="/api/users/60ec69139b16631668556442/logs">Retrieve a <code>part</code> of the log of any user</a>
+          </h3>
+          <ul>
+            <li> <code>GET /api/users/:_id/logs?[&amp;from][&amp;to][&amp;limit]</code> </li>
+            <li>
+              <p><strong>[ ]</strong> = optional</p>
+            </li>
+            <li>
+              <p><strong>from, to</strong> = dates (yyyy-mm-dd); <strong>limit</strong> = number</p>
+            </li>
+          </ul>
+        </li>
+      </ol>
+    </section>
+
+  </div>
+  <!-- add the userid to action form filed -->
+  <script>
+    const exerciseForm = document.getElementById("exercise-form");
+
+    exerciseForm.addEventListener("submit", () => {
+      const userId = document.getElementById("uid").value;
+      exerciseForm.action = `/api/users/${userId}/exercises`;
+
+      exerciseForm.submit();
+    });
+
+  </script>
+  <!-- end script -->
+</body>
+
+</html>
